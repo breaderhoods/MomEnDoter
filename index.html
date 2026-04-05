@@ -33,13 +33,11 @@
 </head>
 <body>
 
-<!-- HEADER -->
-
 <header style="background:linear-gradient(135deg,#7b1e45 0%,#b03470 50%,#7b1e45 100%);padding:52px 24px 44px;text-align:center;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(circle,#ffd6e7 1px,transparent 1px);background-size:18px 18px;"></div>
   <div style="position:relative;">
     <div style="font-size:11px;letter-spacing:0.35em;color:#ffd6e7;text-transform:uppercase;margin-bottom:12px;font-family:'Cormorant Garamond',serif;">✦ Est. Premium Collections ✦</div>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,46px);color:#fff;font-weight:700;line-height:1.15;margin-bottom:8px;letter-spacing:0.02em;text-shadow:0 2px 12px rgba(0,0,0,0.2);">MomEnDoter</h1>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,46px);color:#fff;font-weight:700;line-height:1.15;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,0.2);">MomEnDoter</h1>
     <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(13px,2.5vw,17px);color:#ffd6e7;letter-spacing:0.15em;text-transform:uppercase;">Premium Gowns &amp; Suit Rental</div>
     <div style="position:absolute;top:0;right:0;">
       <button id="adminToggleBtn" onclick="handleAdminToggle()" style="background:none;color:rgba(255,214,231,0.4);border:none;font-size:12px;cursor:pointer;font-family:Georgia,serif;padding:4px 8px;">Admin</button>
@@ -47,23 +45,13 @@
   </div>
 </header>
 
-<!-- ADMIN BAR -->
-
 <div id="adminBar" style="display:none;background:#e05a8a;padding:10px 24px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
   <span style="color:#fff;font-size:13px;font-family:Georgia,serif;font-weight:600;">✦ Admin Mode</span>
   <div style="display:flex;gap:8px;">
-    <button onclick="loadFromSheets()" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:6px;padding:6px 14px;font-family:Georgia,serif;font-size:12px;cursor:pointer;">🔄 Refresh mula Sheets</button>
-    <button onclick="openAddModal()" style="background:#fff;color:#e05a8a;border:none;border-radius:6px;padding:7px 18px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;font-weight:700;">+ Add New Item</button>
+    <button onclick="loadData()" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);border-radius:6px;padding:6px 14px;font-family:Georgia,serif;font-size:12px;cursor:pointer;">🔄 Refresh</button>
+    <button onclick="openAddModal()" style="background:#fff;color:#e05a8a;border:none;border-radius:6px;padding:7px 18px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;font-weight:700;">+ Add Item</button>
   </div>
 </div>
-
-<!-- SHEETS NOTICE (admin) -->
-
-<div id="sheetsNotice" style="display:none;background:#fff0f5;border-bottom:1.5px solid #ffd6e7;padding:10px 24px;font-size:12px;color:#7b3055;font-family:Georgia,serif;text-align:center;">
-  ⚠️ Para ma-save ang mga bagong item permanently, i-add mo rin sila sa iyong <a href="https://docs.google.com/spreadsheets/d/14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg/edit" target="_blank" style="color:#e05a8a;font-weight:600;">Google Sheet</a>.
-</div>
-
-<!-- SEARCH + FILTER -->
 
 <div style="padding:28px 24px 0;max-width:1200px;margin:0 auto;">
   <div style="margin-bottom:20px;position:relative;">
@@ -74,8 +62,6 @@
   <div id="catTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;"></div>
 </div>
 
-<!-- GRID -->
-
 <main style="padding:0 24px 64px;max-width:1200px;margin:0 auto;">
   <div id="loadingState" style="text-align:center;padding:60px 0;">
     <div class="spinner"></div>
@@ -84,86 +70,76 @@
   <div id="grid" style="display:none;"></div>
   <div id="emptyState" style="display:none;text-align:center;padding:80px 0;color:#c05080;font-family:'Playfair Display',serif;font-size:18px;">
     <div style="font-size:48px;margin-bottom:16px;">🪡</div>
-    Walang item na natagpuan.
+    <div>Walang item na natagpuan.</div>
+    <div style="font-size:13px;font-family:Georgia,serif;color:#7b3055;margin-top:8px;">Siguraduhin may laman ang Google Sheet mo.</div>
   </div>
   <div id="errorState" style="display:none;text-align:center;padding:60px 0;color:#c05080;font-family:'Playfair Display',serif;">
     <div style="font-size:40px;margin-bottom:12px;">⚠️</div>
-    <div style="font-size:16px;margin-bottom:6px;">Hindi ma-load ang data mula sa Google Sheets.</div>
-    <div style="font-size:13px;color:#7b3055;font-family:Georgia,serif;margin-bottom:4px;">Siguraduhing naka-set ang sharing sa <strong>"Anyone with the link – Viewer"</strong>.</div>
-    <button class="reload-btn" onclick="loadFromSheets()">Subukan ulit</button>
+    <div style="font-size:16px;margin-bottom:6px;">Hindi ma-load ang data.</div>
+    <div id="errorMsg" style="font-size:12px;color:#7b3055;font-family:Georgia,serif;margin-bottom:12px;"></div>
+    <div style="font-size:13px;color:#7b3055;font-family:Georgia,serif;margin-bottom:4px;">Siguraduhing naka-set ang Google Sheet sa <strong>"Anyone with the link – Viewer"</strong></div>
+    <button class="reload-btn" onclick="loadData()">🔄 Subukan ulit</button>
   </div>
 </main>
-
-<!-- FOOTER -->
 
 <footer style="background:#7b1e45;padding:36px 24px;text-align:center;">
   <div style="font-family:'Playfair Display',serif;color:#ffd6e7;font-size:18px;margin-bottom:6px;font-weight:700;">MomEnDoter</div>
   <div style="color:#f9a8c9;font-size:12px;font-family:Georgia,serif;letter-spacing:0.12em;">PREMIUM GOWNS &amp; SUIT RENTAL SHOP</div>
-  <div style="margin-top:12px;">
+  <div style="margin-top:10px;">
     <a href="https://docs.google.com/spreadsheets/d/14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg/edit" target="_blank"
-      style="font-size:11px;color:#f9a8c9;font-family:Georgia,serif;opacity:0.6;text-decoration:none;">Manage via Google Sheets</a>
+      style="font-size:11px;color:#f9a8c9;opacity:0.5;text-decoration:none;font-family:Georgia,serif;">Manage via Google Sheets</a>
   </div>
 </footer>
 
-<!-- ADD/EDIT MODAL -->
+<!-- EDIT MODAL -->
 
 <div id="editOverlay" class="overlay" style="display:none;" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div style="padding:20px 24px 16px;border-bottom:1.5px solid #ffd6e7;display:flex;justify-content:space-between;align-items:center;">
       <span id="modalTitle" style="font-family:'Playfair Display',serif;font-size:18px;color:#3b0a22;font-weight:700;">Add New Item</span>
-      <button onclick="document.getElementById('editOverlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#e05a8a;line-height:1;">×</button>
+      <button onclick="document.getElementById('editOverlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#e05a8a;">×</button>
     </div>
     <div style="padding:20px 24px;">
-
-```
-  <!-- Image URL -->
-  <div style="margin-bottom:16px;">
-    <label class="field-label">Image URL (mula sa Google Drive o iba pang link)</label>
-    <input type="text" id="editImage" class="field-input" placeholder="https://drive.google.com/..." oninput="previewImageUrl()" />
-    <div id="imgPreviewBox" style="margin-top:8px;display:none;">
-      <img id="imgPreview" src="" alt="Preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1.5px solid #f9a8c9;" />
+      <div style="margin-bottom:16px;">
+        <label class="field-label">Image URL (Google Drive link)</label>
+        <input type="text" id="editImage" class="field-input" placeholder="https://drive.google.com/file/d/..." oninput="previewImageUrl()" />
+        <div id="imgPreviewBox" style="margin-top:8px;display:none;">
+          <img id="imgPreview" src="" alt="Preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1.5px solid #f9a8c9;" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div style="font-size:11px;color:#a06080;margin-top:6px;font-family:Georgia,serif;line-height:1.5;">
+          💡 Para sa Google Drive photo: buksan → tatlong tuldok (⋯) → Share → "Anyone with link" → copy link → i-paste dito
+        </div>
+      </div>
+      <input type="hidden" id="editId" />
+      <div style="margin-bottom:12px;"><label class="field-label">Item Name</label><input type="text" id="editName" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Price (e.g. ₱1,500/day)</label><input type="text" id="editPrice" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Size (e.g. S-XL)</label><input type="text" id="editSize" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Color</label><input type="text" id="editColor" class="field-input" /></div>
+      <div style="margin-bottom:12px;">
+        <label class="field-label">Category</label>
+        <select id="editCategory" class="field-input">
+          <option>Gowns</option><option>Suits</option><option>Barong</option><option>Kids</option><option>Others</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px;"><label class="field-label">Description</label><textarea id="editDescription" class="field-input" rows="3" style="resize:vertical;"></textarea></div>
+      <div style="background:#fce4ef;border-radius:8px;padding:12px;margin-bottom:20px;font-size:12px;color:#7b1e45;font-family:Georgia,serif;line-height:1.6;">
+        📋 <strong>Para ma-save permanently:</strong> I-add din sa
+        <a href="https://docs.google.com/spreadsheets/d/14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg/edit" target="_blank" style="color:#e05a8a;font-weight:600;">Google Sheet</a>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="saveItem()" style="flex:1;background:#e05a8a;color:#fff;border:none;border-radius:6px;padding:13px;font-family:'Playfair Display',serif;font-size:14px;cursor:pointer;font-weight:700;">Save</button>
+        <button id="deleteBtn" onclick="deleteItem()" style="background:#fff0f5;color:#c0305a;border:1.5px solid #f9a8c9;border-radius:6px;padding:13px 18px;font-family:Georgia,serif;font-size:13px;cursor:pointer;display:none;">Delete</button>
+      </div>
     </div>
-    <div style="font-size:11px;color:#a06080;font-family:Georgia,serif;margin-top:6px;">
-      💡 Para sa Google Drive: buksan ang larawan → Share → "Anyone with link" → copy link → i-paste dito
-    </div>
-  </div>
-
-  <input type="hidden" id="editId" />
-  <div style="margin-bottom:12px;"><label class="field-label">Item Name</label><input type="text" id="editName" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Price (e.g. ₱1,500/day)</label><input type="text" id="editPrice" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Size (e.g. S-XL)</label><input type="text" id="editSize" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Color</label><input type="text" id="editColor" class="field-input" /></div>
-  <div style="margin-bottom:12px;">
-    <label class="field-label">Category</label>
-    <select id="editCategory" class="field-input">
-      <option>Gowns</option><option>Suits</option><option>Barong</option><option>Kids</option><option>Others</option>
-    </select>
-  </div>
-  <div style="margin-bottom:20px;"><label class="field-label">Description</label><textarea id="editDescription" class="field-input" rows="3" style="resize:vertical;"></textarea></div>
-
-  <div style="background:#fce4ef;border-radius:8px;padding:12px;margin-bottom:20px;font-size:12px;color:#7b1e45;font-family:Georgia,serif;line-height:1.6;">
-    📋 <strong>Para ma-save permanently:</strong><br>
-    Pagkatapos mag-save dito, i-add mo rin ang item sa iyong
-    <a href="https://docs.google.com/spreadsheets/d/14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg/edit" target="_blank" style="color:#e05a8a;font-weight:600;">Google Sheet</a>
-    para hindi mawala kapag na-refresh ang page.
-  </div>
-
-  <div style="display:flex;gap:10px;">
-    <button onclick="saveItem()" style="flex:1;background:#e05a8a;color:#fff;border:none;border-radius:6px;padding:13px;font-family:'Playfair Display',serif;font-size:14px;cursor:pointer;font-weight:700;">Save</button>
-    <button id="deleteBtn" onclick="deleteItem()" style="background:#fff0f5;color:#c0305a;border:1.5px solid #f9a8c9;border-radius:6px;padding:13px 18px;font-family:Georgia,serif;font-size:13px;cursor:pointer;display:none;">Delete</button>
-  </div>
-</div>
-```
-
   </div>
 </div>
 
 <!-- ADMIN LOGIN -->
 
-<div id="loginOverlay" class="overlay" style="display:none;" onclick="if(event.target===this){this.style.display='none'}">
+<div id="loginOverlay" class="overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
   <div onclick="event.stopPropagation()" style="background:#fff0f5;border-radius:12px;padding:36px;width:320px;box-shadow:0 24px 80px rgba(180,60,110,0.25);border:1.5px solid #ffd6e7;">
     <div style="font-family:'Playfair Display',serif;font-size:22px;color:#3b0a22;margin-bottom:6px;font-weight:700;">Admin Access</div>
-    <div style="font-size:13px;color:#7b3055;margin-bottom:22px;font-family:Georgia,serif;">I-enter ang password para ma-manage ang items</div>
+    <div style="font-size:13px;color:#7b3055;margin-bottom:22px;font-family:Georgia,serif;">I-enter ang password</div>
     <input type="password" id="passInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"
       style="width:100%;padding:10px 12px;border:1.5px solid #f9a8c9;border-radius:6px;margin-bottom:6px;font-family:Georgia,serif;font-size:14px;color:#3b0a22;background:#fff;" />
     <div id="passError" style="color:#e05a8a;font-size:12px;margin-bottom:12px;font-family:Georgia,serif;font-weight:600;display:none;">Mali ang password.</div>
@@ -173,118 +149,101 @@
 </div>
 
 <script>
-// ── CONFIG ───────────────────────────────────────────────────
 const SHEET_ID = '14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg';
 const ADMIN_PASSWORD = 'momenDoter2024';
 const CATEGORIES = ['All','Gowns','Suits','Barong','Kids','Others'];
-const PLACEHOLDER_BG = { Gowns:'#fce4ef', Suits:'#f5d0e3', Barong:'#fdeaf2', Kids:'#ffd6e7', Others:'#f9c8de' };
+const PH = { Gowns:'#fce4ef', Suits:'#f5d0e3', Barong:'#fdeaf2', Kids:'#ffd6e7', Others:'#f9c8de' };
 
 let items = [];
 let activeCategory = 'All';
 let isAdmin = false;
 
-// ── GOOGLE SHEETS LOAD ───────────────────────────────────────
-async function loadFromSheets() {
+// ── FETCH via CSV export (most reliable, no API key needed) ──
+async function loadData() {
   showState('loading');
+  // CSV export URL — works as long as sheet is "Anyone with the link"
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=Sheet1`;
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('fetch failed');
-    const text = await res.text();
-    // Strip Google's wrapper: google.visualization.Query.setResponse({...})
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-    const rows = json.table.rows;
-    const cols = json.table.cols.map(c => c.label.toLowerCase().trim());
-
-    items = rows.map((row, i) => {
-      const get = (key) => {
-        const idx = cols.indexOf(key);
-        return idx > -1 && row.c[idx] ? String(row.c[idx].v || '').trim() : '';
-      };
-      return {
-        id: get('id') || (i + 1),
-        name: get('name'),
-        category: get('category') || 'Others',
-        price: get('price'),
-        size: get('size'),
-        color: get('color'),
-        description: get('description'),
-        image: get('image') || null,
-      };
-    }).filter(item => item.name);
-
-    if (items.length === 0) {
-      // Sheet is empty or headers only — show empty state with helpful message
-      showState('empty');
-    } else {
-      showState('grid');
-      renderCatTabs();
-      renderGrid();
-    }
-  } catch (e) {
-    console.error(e);
+    const res = await fetch(csvUrl);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const csv = await res.text();
+    parseCSV(csv);
+  } catch(e) {
+    document.getElementById('errorMsg').textContent = e.message;
     showState('error');
   }
 }
 
-function showState(state) {
-  document.getElementById('loadingState').style.display = state === 'loading' ? 'block' : 'none';
-  document.getElementById('grid').style.display = state === 'grid' ? 'grid' : 'none';
-  document.getElementById('emptyState').style.display = state === 'empty' ? 'block' : 'none';
-  document.getElementById('errorState').style.display = state === 'error' ? 'block' : 'none';
+function parseCSV(csv) {
+  const lines = csv.trim().split('\n').map(l => l.split(',').map(c => c.replace(/^"|"$/g,'').trim()));
+  if (lines.length < 2) { showState('empty'); return; }
+  const headers = lines[0].map(h => h.toLowerCase().trim());
+  const get = (row, key) => { const i = headers.indexOf(key); return i > -1 ? (row[i]||'').trim() : ''; };
+
+  items = lines.slice(1).map((row, i) => ({
+    id: get(row,'id') || String(i+1),
+    name: get(row,'name'),
+    category: get(row,'category') || 'Others',
+    price: get(row,'price'),
+    size: get(row,'size'),
+    color: get(row,'color'),
+    description: get(row,'description'),
+    image: get(row,'image') || null,
+  })).filter(item => item.name);
+
+  if (items.length === 0) { showState('empty'); return; }
+  showState('grid');
+  renderCatTabs();
+  renderGrid();
 }
 
-// ── ICONS ────────────────────────────────────────────────────
+function showState(s) {
+  document.getElementById('loadingState').style.display = s==='loading'?'block':'none';
+  document.getElementById('grid').style.display = s==='grid'?'grid':'none';
+  document.getElementById('emptyState').style.display = s==='empty'?'block':'none';
+  document.getElementById('errorState').style.display = s==='error'?'block':'none';
+}
+
+// ── ICONS ──
 const gownSVG = `<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M24 4C20 4 17 7 17 11V18L8 28V60H40V28L31 18V11C31 7 28 4 24 4Z" fill="#e05a8a" opacity="0.2"/><path d="M17 18L8 28M31 18L40 28" stroke="#e05a8a" stroke-width="1.5"/><ellipse cx="24" cy="10" rx="4" ry="5" stroke="#e05a8a" stroke-width="1.5" fill="none"/></svg>`;
 const suitSVG = `<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M16 4L8 18V60H40V18L32 4" stroke="#e05a8a" stroke-width="1.5" fill="none"/><path d="M16 4C16 4 20 12 24 12C28 12 32 4 32 4" stroke="#e05a8a" stroke-width="1.5"/><path d="M24 12V32M20 20H28" stroke="#e05a8a" stroke-width="1.5"/><rect x="21" y="32" width="6" height="8" rx="1" stroke="#e05a8a" stroke-width="1"/></svg>`;
 
-// ── RENDER ───────────────────────────────────────────────────
+function toDirectImg(url) {
+  if (!url) return null;
+  const m = url.match(/\/d\/([\w-]+)/) || url.match(/id=([\w-]+)/);
+  return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400` : url;
+}
+
 function renderCatTabs() {
-  const container = document.getElementById('catTabs');
-  container.innerHTML = CATEGORIES.map(cat => `
-    <button onclick="setCategory('${cat}')" style="padding:7px 20px;border-radius:20px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;letter-spacing:0.03em;transition:all 0.2s;
+  document.getElementById('catTabs').innerHTML = CATEGORIES.map(cat => `
+    <button onclick="setCategory('${cat}')" style="padding:7px 20px;border-radius:20px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;transition:all 0.2s;
       border:${activeCategory===cat?'none':'1.5px solid #f9a8c9'};
       background:${activeCategory===cat?'#e05a8a':'#fff'};
       color:${activeCategory===cat?'#fff':'#7b1e45'};
       font-weight:${activeCategory===cat?700:400};
-      box-shadow:${activeCategory===cat?'0 2px 10px rgba(224,90,138,0.3)':'none'};">
-      ${cat}
-    </button>`).join('');
+      box-shadow:${activeCategory===cat?'0 2px 10px rgba(224,90,138,0.3)':'none'};">${cat}</button>`).join('');
 }
 
 function renderGrid() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const filtered = items.filter(item => {
-    const matchCat = activeCategory === 'All' || item.category === activeCategory;
-    return matchCat && (item.name.toLowerCase().includes(q) || (item.color||'').toLowerCase().includes(q) || (item.description||'').toLowerCase().includes(q));
+    const mc = activeCategory==='All' || item.category===activeCategory;
+    return mc && (item.name.toLowerCase().includes(q)||(item.color||'').toLowerCase().includes(q)||(item.description||'').toLowerCase().includes(q));
   });
-
-  if (filtered.length === 0) { showState('empty'); return; }
+  if (!filtered.length) { showState('empty'); return; }
   showState('grid');
-
-  const isSuit = cat => ['Suits','Barong'].includes(cat);
-
-  // Convert Google Drive share links to direct image links
-  function toDirectImg(url) {
-    if (!url) return null;
-    // Handle /file/d/ID/view or /open?id=ID
-    const m = url.match(/\/d\/([\w-]+)/) || url.match(/id=([\w-]+)/);
-    if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
-    return url;
-  }
-
+  const isSuit = c => ['Suits','Barong'].includes(c);
   document.getElementById('grid').innerHTML = filtered.map(item => {
-    const imgUrl = toDirectImg(item.image);
-    return `
-    <div class="card ${isAdmin?'admin-mode':''}" style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(180,60,110,0.1);border:1.5px solid #ffd6e7;display:flex;flex-direction:column;">
-      <div style="aspect-ratio:3/4;background:${PLACEHOLDER_BG[item.category]||'#fce4ef'};position:relative;overflow:hidden;">
-        ${imgUrl
-          ? `<img src="${imgUrl}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-             <div class="placeholder-img" style="background:${PLACEHOLDER_BG[item.category]||'#fce4ef'};display:none;">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;font-family:serif;color:#b0507a;">No photo yet</span></div>`
-          : `<div class="placeholder-img" style="background:${PLACEHOLDER_BG[item.category]||'#fce4ef'};">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;font-family:serif;color:#b0507a;">No photo yet</span></div>`
+    const img = toDirectImg(item.image);
+    return `<div class="card ${isAdmin?'admin-mode':''}" style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(180,60,110,0.1);border:1.5px solid #ffd6e7;display:flex;flex-direction:column;">
+      <div style="aspect-ratio:3/4;background:${PH[item.category]||'#fce4ef'};position:relative;overflow:hidden;">
+        ${img
+          ? `<img src="${img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+             <div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};display:none;">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo</span></div>`
+          : `<div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo yet</span></div>`
         }
         <div class="cat-badge">${item.category}</div>
-        <button class="edit-btn" onclick="openEditModal(${JSON.stringify(item.id)})">✎</button>
+        <button class="edit-btn" onclick='openEditModal(${JSON.stringify(item.id)})'>✎</button>
       </div>
       <div style="padding:14px 16px 16px;">
         <div style="font-family:'Playfair Display',serif;font-size:15px;color:#3b0a22;font-weight:700;margin-bottom:4px;">${item.name}</div>
@@ -296,91 +255,70 @@ function renderGrid() {
   }).join('');
 }
 
-function setCategory(cat) {
-  activeCategory = cat;
-  renderCatTabs();
-  renderGrid();
-}
+function setCategory(cat) { activeCategory=cat; renderCatTabs(); renderGrid(); }
 
-// ── ADMIN ────────────────────────────────────────────────────
 function handleAdminToggle() {
   if (isAdmin) {
-    isAdmin = false;
-    document.getElementById('adminBar').style.display = 'none';
-    document.getElementById('sheetsNotice').style.display = 'none';
-    document.getElementById('adminToggleBtn').textContent = 'Admin';
-    document.getElementById('adminToggleBtn').style.color = 'rgba(255,214,231,0.4)';
+    isAdmin=false;
+    document.getElementById('adminBar').style.display='none';
+    document.getElementById('adminToggleBtn').textContent='Admin';
+    document.getElementById('adminToggleBtn').style.color='rgba(255,214,231,0.4)';
     renderGrid();
   } else {
-    document.getElementById('loginOverlay').style.display = 'flex';
-    document.getElementById('passInput').value = '';
-    document.getElementById('passError').style.display = 'none';
+    document.getElementById('loginOverlay').style.display='flex';
+    document.getElementById('passInput').value='';
+    document.getElementById('passError').style.display='none';
   }
 }
 
 function doLogin() {
-  if (document.getElementById('passInput').value === ADMIN_PASSWORD) {
-    isAdmin = true;
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('adminBar').style.display = 'flex';
-    document.getElementById('sheetsNotice').style.display = 'block';
-    document.getElementById('adminToggleBtn').textContent = 'Exit Admin';
-    document.getElementById('adminToggleBtn').style.color = '#ffd6e7';
+  if (document.getElementById('passInput').value===ADMIN_PASSWORD) {
+    isAdmin=true;
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('adminBar').style.display='flex';
+    document.getElementById('adminToggleBtn').textContent='Exit Admin';
+    document.getElementById('adminToggleBtn').style.color='#ffd6e7';
     renderGrid();
-  } else {
-    document.getElementById('passError').style.display = 'block';
-  }
+  } else { document.getElementById('passError').style.display='block'; }
 }
 
-// ── MODAL ────────────────────────────────────────────────────
 function openAddModal() {
-  document.getElementById('editId').value = '';
-  document.getElementById('modalTitle').textContent = 'Add New Item';
-  document.getElementById('deleteBtn').style.display = 'none';
-  document.getElementById('editName').value = '';
-  document.getElementById('editPrice').value = '';
-  document.getElementById('editSize').value = '';
-  document.getElementById('editColor').value = '';
-  document.getElementById('editCategory').value = 'Gowns';
-  document.getElementById('editDescription').value = '';
-  document.getElementById('editImage').value = '';
-  document.getElementById('imgPreviewBox').style.display = 'none';
-  document.getElementById('editOverlay').style.display = 'flex';
+  document.getElementById('editId').value='';
+  document.getElementById('modalTitle').textContent='Add New Item';
+  document.getElementById('deleteBtn').style.display='none';
+  ['editName','editPrice','editSize','editColor','editDescription','editImage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('editCategory').value='Gowns';
+  document.getElementById('imgPreviewBox').style.display='none';
+  document.getElementById('editOverlay').style.display='flex';
 }
 
 function openEditModal(id) {
-  const item = items.find(i => String(i.id) === String(id));
+  const item = items.find(i=>String(i.id)===String(id));
   if (!item) return;
-  document.getElementById('editId').value = id;
-  document.getElementById('modalTitle').textContent = 'Edit Item';
-  document.getElementById('deleteBtn').style.display = 'block';
-  document.getElementById('editName').value = item.name;
-  document.getElementById('editPrice').value = item.price;
-  document.getElementById('editSize').value = item.size;
-  document.getElementById('editColor').value = item.color;
-  document.getElementById('editCategory').value = item.category;
-  document.getElementById('editDescription').value = item.description;
-  document.getElementById('editImage').value = item.image || '';
+  document.getElementById('editId').value=id;
+  document.getElementById('modalTitle').textContent='Edit Item';
+  document.getElementById('deleteBtn').style.display='block';
+  document.getElementById('editName').value=item.name;
+  document.getElementById('editPrice').value=item.price;
+  document.getElementById('editSize').value=item.size;
+  document.getElementById('editColor').value=item.color;
+  document.getElementById('editCategory').value=item.category;
+  document.getElementById('editDescription').value=item.description;
+  document.getElementById('editImage').value=item.image||'';
   previewImageUrl();
-  document.getElementById('editOverlay').style.display = 'flex';
+  document.getElementById('editOverlay').style.display='flex';
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('editOverlay'))
-    document.getElementById('editOverlay').style.display = 'none';
-}
+function closeModal(e) { if(e.target===document.getElementById('editOverlay')) document.getElementById('editOverlay').style.display='none'; }
 
 function previewImageUrl() {
   const val = document.getElementById('editImage').value.trim();
   const box = document.getElementById('imgPreviewBox');
-  const img = document.getElementById('imgPreview');
   if (val) {
-    const m = val.match(/\/d\/([\w-]+)/) || val.match(/id=([\w-]+)/);
-    img.src = m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400` : val;
-    box.style.display = 'block';
-  } else {
-    box.style.display = 'none';
-  }
+    const m = val.match(/\/d\/([\w-]+)/)||val.match(/id=([\w-]+)/);
+    document.getElementById('imgPreview').src = m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`:val;
+    box.style.display='block';
+  } else { box.style.display='none'; }
 }
 
 function saveItem() {
@@ -392,30 +330,25 @@ function saveItem() {
     color: document.getElementById('editColor').value.trim(),
     category: document.getElementById('editCategory').value,
     description: document.getElementById('editDescription').value.trim(),
-    image: document.getElementById('editImage').value.trim() || null,
+    image: document.getElementById('editImage').value.trim()||null,
   };
   if (!data.name) { alert('Lagyan ng pangalan ang item.'); return; }
-  if (id) {
-    const idx = items.findIndex(i => String(i.id) === String(id));
-    if (idx > -1) items[idx] = { ...items[idx], ...data };
-  } else {
-    items.push({ id: Date.now(), ...data });
-  }
-  document.getElementById('editOverlay').style.display = 'none';
+  if (id) { const i=items.findIndex(x=>String(x.id)===String(id)); if(i>-1) items[i]={...items[i],...data}; }
+  else items.push({id:Date.now(),...data});
+  document.getElementById('editOverlay').style.display='none';
   renderGrid();
 }
 
 function deleteItem() {
   const id = document.getElementById('editId').value;
-  if (!id || !confirm('I-delete ba ang item na ito?')) return;
-  items = items.filter(i => String(i.id) !== String(id));
-  document.getElementById('editOverlay').style.display = 'none';
+  if (!id||!confirm('I-delete ba?')) return;
+  items=items.filter(i=>String(i.id)!==String(id));
+  document.getElementById('editOverlay').style.display='none';
   renderGrid();
 }
 
-// ── INIT ─────────────────────────────────────────────────────
 renderCatTabs();
-loadFromSheets();
+loadData();
 </script>
 
 </body>
