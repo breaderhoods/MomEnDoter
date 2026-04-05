@@ -27,12 +27,17 @@
     .placeholder-img { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .spinner { border: 3px solid #ffd6e7; border-top: 3px solid #e05a8a; border-radius: 50%; width: 36px; height: 36px; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .btn-pink { background: #e05a8a; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-family: 'Playfair Display', serif; font-size: 14px; cursor: pointer; font-weight: 700; }
+    .btn-pink { background: #e05a8a; color: #fff; border: none; border-radius: 6px; padding: 10px 24px; font-family: 'Playfair Display', serif; font-size: 14px; cursor: pointer; font-weight: 700; transition: background 0.2s; }
+    .btn-pink:hover { background: #c8406e; }
     .btn-pink:disabled { opacity: 0.6; cursor: not-allowed; }
+    .inquire-btn { width: 100%; background: #fff0f5; color: #e05a8a; border: 1.5px solid #e05a8a; border-radius: 6px; padding: 9px; font-family: 'Playfair Display', serif; font-size: 13px; cursor: pointer; font-weight: 700; transition: all 0.2s; letter-spacing: 0.03em; margin-top: 10px; }
+    .inquire-btn:hover { background: #e05a8a; color: #fff; }
     @media (max-width: 600px) { #grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; } }
   </style>
 </head>
 <body>
+
+<!-- HEADER -->
 
 <header style="background:linear-gradient(135deg,#7b1e45 0%,#b03470 50%,#7b1e45 100%);padding:52px 24px 44px;text-align:center;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;opacity:0.07;background-image:radial-gradient(circle,#ffd6e7 1px,transparent 1px);background-size:18px 18px;"></div>
@@ -46,6 +51,8 @@
   </div>
 </header>
 
+<!-- ADMIN BAR -->
+
 <div id="adminBar" style="display:none;background:#e05a8a;padding:10px 24px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
   <span style="color:#fff;font-size:13px;font-family:Georgia,serif;font-weight:600;">✦ Admin Mode — Naka-sync sa Google Sheets</span>
   <div style="display:flex;gap:8px;">
@@ -53,6 +60,8 @@
     <button onclick="openAddModal()" style="background:#fff;color:#e05a8a;border:none;border-radius:6px;padding:7px 18px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;font-weight:700;">+ Add Item</button>
   </div>
 </div>
+
+<!-- SEARCH + FILTER -->
 
 <div style="padding:28px 24px 0;max-width:1200px;margin:0 auto;">
   <div style="margin-bottom:20px;position:relative;">
@@ -62,6 +71,8 @@
   </div>
   <div id="catTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;"></div>
 </div>
+
+<!-- GRID -->
 
 <main style="padding:0 24px 64px;max-width:1200px;margin:0 auto;">
   <div id="loadingState" style="text-align:center;padding:60px 0;">
@@ -82,12 +93,66 @@
   </div>
 </main>
 
+<!-- FOOTER -->
+
 <footer style="background:#7b1e45;padding:36px 24px;text-align:center;">
   <div style="font-family:'Playfair Display',serif;color:#ffd6e7;font-size:18px;margin-bottom:6px;font-weight:700;">MomEnDoter</div>
   <div style="color:#f9a8c9;font-size:12px;font-family:Georgia,serif;letter-spacing:0.12em;">PREMIUM GOWNS &amp; SUIT RENTAL SHOP</div>
 </footer>
 
-<!-- EDIT / ADD MODAL -->
+<!-- ═══ INQUIRY MODAL ═══ -->
+
+<div id="inquiryOverlay" class="overlay" style="display:none;" onclick="if(event.target===this)closeInquiry()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div style="padding:20px 24px 16px;border-bottom:1.5px solid #ffd6e7;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:18px;color:#3b0a22;font-weight:700;">Mag-Inquire</div>
+        <div id="inquiryItemName" style="font-size:12px;color:#e05a8a;font-family:Georgia,serif;margin-top:2px;"></div>
+      </div>
+      <button onclick="closeInquiry()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#e05a8a;">×</button>
+    </div>
+    <div style="padding:20px 24px;">
+      <div id="inquiryStatus" style="display:none;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;font-family:Georgia,serif;text-align:center;"></div>
+
+```
+  <div style="background:#fce4ef;border-radius:8px;padding:12px;margin-bottom:18px;font-size:12px;color:#7b1e45;font-family:Georgia,serif;line-height:1.6;">
+    🌸 Ilagay ang iyong info at iko-contact ka namin para sa availability at booking details.
+  </div>
+
+  <div style="margin-bottom:12px;">
+    <label class="field-label">Pangalan <span style="color:#e05a8a;">*</span></label>
+    <input type="text" id="iqName" class="field-input" placeholder="Juan dela Cruz" />
+  </div>
+  <div style="margin-bottom:12px;">
+    <label class="field-label">Phone Number <span style="color:#e05a8a;">*</span></label>
+    <input type="tel" id="iqPhone" class="field-input" placeholder="09XX-XXX-XXXX" />
+  </div>
+  <div style="margin-bottom:12px;">
+    <label class="field-label">Email</label>
+    <input type="email" id="iqEmail" class="field-input" placeholder="email@example.com" />
+  </div>
+  <div style="margin-bottom:12px;">
+    <label class="field-label">Address</label>
+    <input type="text" id="iqAddress" class="field-input" placeholder="Lungsod, Probinsya" />
+  </div>
+  <div style="margin-bottom:20px;">
+    <label class="field-label">Message / Tanong</label>
+    <textarea id="iqMessage" class="field-input" rows="3" style="resize:vertical;" placeholder="Kailan ang event? May ibang tanong ka ba?"></textarea>
+  </div>
+
+  <button id="iqSubmitBtn" onclick="submitInquiry()" class="btn-pink" style="width:100%;padding:13px;font-size:15px;">
+    📩 Ipadala ang Inquiry
+  </button>
+  <div style="margin-top:10px;font-size:11px;color:#a06080;font-family:Georgia,serif;text-align:center;">
+    Ang iyong info ay ibibigay lamang sa MomEnDoter shop owner.
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ═══ EDIT / ADD MODAL ═══ -->
 
 <div id="editOverlay" class="overlay" style="display:none;" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
@@ -96,47 +161,38 @@
       <button onclick="document.getElementById('editOverlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#e05a8a;">×</button>
     </div>
     <div style="padding:20px 24px;">
-
-```
-  <!-- Saving status -->
-  <div id="saveStatus" style="display:none;background:#fce4ef;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#7b1e45;font-family:Georgia,serif;text-align:center;"></div>
-
-  <!-- Image URL -->
-  <div style="margin-bottom:16px;">
-    <label class="field-label">Image URL (Google Drive link)</label>
-    <input type="text" id="editImage" class="field-input" placeholder="https://drive.google.com/file/d/..." oninput="previewImageUrl()" />
-    <div id="imgPreviewBox" style="margin-top:8px;display:none;">
-      <img id="imgPreview" src="" alt="Preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1.5px solid #f9a8c9;" onerror="this.parentElement.style.display='none'" />
+      <div id="saveStatus" style="display:none;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#7b1e45;font-family:Georgia,serif;text-align:center;background:#fce4ef;"></div>
+      <div style="margin-bottom:16px;">
+        <label class="field-label">Image URL (Google Drive link)</label>
+        <input type="text" id="editImage" class="field-input" placeholder="https://drive.google.com/file/d/..." oninput="previewImageUrl()" />
+        <div id="imgPreviewBox" style="margin-top:8px;display:none;">
+          <img id="imgPreview" src="" alt="Preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:6px;border:1.5px solid #f9a8c9;" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div style="font-size:11px;color:#a06080;margin-top:6px;font-family:Georgia,serif;line-height:1.5;">
+          💡 Google Drive: buksan → ⋯ → Share → "Anyone with link" → copy → i-paste dito
+        </div>
+      </div>
+      <input type="hidden" id="editId" />
+      <div style="margin-bottom:12px;"><label class="field-label">Item Name</label><input type="text" id="editName" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Price (e.g. ₱1,500/day)</label><input type="text" id="editPrice" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Size (e.g. S-XL)</label><input type="text" id="editSize" class="field-input" /></div>
+      <div style="margin-bottom:12px;"><label class="field-label">Color</label><input type="text" id="editColor" class="field-input" /></div>
+      <div style="margin-bottom:12px;">
+        <label class="field-label">Category</label>
+        <select id="editCategory" class="field-input">
+          <option>Gowns</option><option>Suits</option><option>Barong</option><option>Kids</option><option>Others</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px;"><label class="field-label">Description</label><textarea id="editDescription" class="field-input" rows="3" style="resize:vertical;"></textarea></div>
+      <div style="display:flex;gap:10px;">
+        <button id="saveBtn" onclick="saveItem()" class="btn-pink" style="flex:1;">💾 Save to Google Sheets</button>
+        <button id="deleteBtn" onclick="deleteItem()" style="background:#fff0f5;color:#c0305a;border:1.5px solid #f9a8c9;border-radius:6px;padding:13px 18px;font-family:Georgia,serif;font-size:13px;cursor:pointer;display:none;">Delete</button>
+      </div>
     </div>
-    <div style="font-size:11px;color:#a06080;margin-top:6px;font-family:Georgia,serif;line-height:1.5;">
-      💡 Google Drive: buksan larawan → ⋯ → Share → "Anyone with link" → copy → i-paste dito
-    </div>
-  </div>
-
-  <input type="hidden" id="editId" />
-  <div style="margin-bottom:12px;"><label class="field-label">Item Name</label><input type="text" id="editName" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Price (e.g. ₱1,500/day)</label><input type="text" id="editPrice" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Size (e.g. S-XL)</label><input type="text" id="editSize" class="field-input" /></div>
-  <div style="margin-bottom:12px;"><label class="field-label">Color</label><input type="text" id="editColor" class="field-input" /></div>
-  <div style="margin-bottom:12px;">
-    <label class="field-label">Category</label>
-    <select id="editCategory" class="field-input">
-      <option>Gowns</option><option>Suits</option><option>Barong</option><option>Kids</option><option>Others</option>
-    </select>
-  </div>
-  <div style="margin-bottom:20px;"><label class="field-label">Description</label><textarea id="editDescription" class="field-input" rows="3" style="resize:vertical;"></textarea></div>
-
-  <div style="display:flex;gap:10px;">
-    <button id="saveBtn" onclick="saveItem()" class="btn-pink" style="flex:1;">💾 Save to Google Sheets</button>
-    <button id="deleteBtn" onclick="deleteItem()" style="background:#fff0f5;color:#c0305a;border:1.5px solid #f9a8c9;border-radius:6px;padding:13px 18px;font-family:Georgia,serif;font-size:13px;cursor:pointer;display:none;">Delete</button>
-  </div>
-</div>
-```
-
   </div>
 </div>
 
-<!-- ADMIN LOGIN -->
+<!-- ═══ ADMIN LOGIN ═══ -->
 
 <div id="loginOverlay" class="overlay" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
   <div onclick="event.stopPropagation()" style="background:#fff0f5;border-radius:12px;padding:36px;width:320px;box-shadow:0 24px 80px rgba(180,60,110,0.25);border:1.5px solid #ffd6e7;">
@@ -151,8 +207,8 @@
 </div>
 
 <script>
-const SHEET_ID = '14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3kYNxDKWvj5oChY81GSN8LQyD1vHD5_4cXQwzqJlYFFMkP388oFGFblHSybGIIfSX/exec';
+const SHEET_ID   = '14oHmLjVkar05V0Tc_SBYlyt30aCwQr1YaJ88FKbsyUg';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWHQjcGwqmIbKa6CYXRtcGi12mJ3nKpslLmBSNEgKBNPaXCOIyqgnKXcu071F7Ocnp/exec';
 const ADMIN_PASSWORD = 'momenDoter2024';
 const CATEGORIES = ['All','Gowns','Suits','Barong','Kids','Others'];
 const PH = { Gowns:'#fce4ef', Suits:'#f5d0e3', Barong:'#fdeaf2', Kids:'#ffd6e7', Others:'#f9c8de' };
@@ -160,13 +216,13 @@ const PH = { Gowns:'#fce4ef', Suits:'#f5d0e3', Barong:'#fdeaf2', Kids:'#ffd6e7',
 let items = [];
 let activeCategory = 'All';
 let isAdmin = false;
+let currentInquiryItem = '';
 
-// ── LOAD from Google Sheets (CSV) ──────────────────────────
+// ── LOAD ──────────────────────────────────────────────────
 async function loadData() {
   showState('loading');
   try {
-    const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=Sheet1&cachebust=${Date.now()}`;
-    const res = await fetch(csvUrl);
+    const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=Sheet1&cachebust=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     parseCSV(await res.text());
   } catch(e) {
@@ -176,94 +232,49 @@ async function loadData() {
 }
 
 function parseCSV(csv) {
-  // Handle quoted fields with commas inside
   function parseRow(line) {
-    const result = [];
-    let cur = '', inQ = false;
-    for (let c of line) {
-      if (c === '"') { inQ = !inQ; }
-      else if (c === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-      else cur += c;
-    }
-    result.push(cur.trim());
-    return result;
+    const r=[]; let cur='',inQ=false;
+    for(let c of line){ if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){r.push(cur.trim());cur='';}else cur+=c; }
+    r.push(cur.trim()); return r;
   }
-
   const lines = csv.trim().split('\n');
-  if (lines.length < 2) { showState('empty'); return; }
-  const headers = parseRow(lines[0]).map(h => h.toLowerCase().trim());
-  const get = (row, key) => { const i = headers.indexOf(key); return i > -1 ? (row[i]||'').trim() : ''; };
-
-  items = lines.slice(1).map((line, i) => {
-    const row = parseRow(line);
-    return {
-      id: get(row,'id') || String(i+1),
-      name: get(row,'name'),
-      category: get(row,'category') || 'Others',
-      price: get(row,'price'),
-      size: get(row,'size'),
-      color: get(row,'color'),
-      description: get(row,'description'),
-      image: get(row,'image') || null,
-    };
-  }).filter(item => item.name);
-
-  items.length === 0 ? showState('empty') : (showState('grid'), renderCatTabs(), renderGrid());
+  if(lines.length<2){showState('empty');return;}
+  const headers = parseRow(lines[0]).map(h=>h.toLowerCase().trim());
+  const get=(row,key)=>{const i=headers.indexOf(key);return i>-1?(row[i]||'').trim():'';};
+  items = lines.slice(1).map((line,i)=>{
+    const row=parseRow(line);
+    return {id:get(row,'id')||String(i+1),name:get(row,'name'),category:get(row,'category')||'Others',price:get(row,'price'),size:get(row,'size'),color:get(row,'color'),description:get(row,'description'),image:get(row,'image')||null};
+  }).filter(item=>item.name);
+  items.length===0?showState('empty'):(showState('grid'),renderCatTabs(),renderGrid());
 }
 
-// ── SAVE to Google Sheets via Apps Script ──────────────────
+// ── PUSH TO SHEET ─────────────────────────────────────────
 async function pushToSheet(action, data) {
-  const status = document.getElementById('saveStatus');
-  status.style.display = 'block';
-  status.textContent = '⏳ Nag-se-save sa Google Sheets...';
-  document.getElementById('saveBtn').disabled = true;
-
   try {
-    // Use no-cors mode — Apps Script supports this
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, ...data }),
-    });
-    status.style.background = '#d4f0e0';
-    status.style.color = '#1a5c35';
-    status.textContent = '✅ Na-save sa Google Sheets!';
-    setTimeout(() => {
-      document.getElementById('editOverlay').style.display = 'none';
-      status.style.display = 'none';
-      status.style.background = '#fce4ef';
-      status.style.color = '#7b1e45';
-      loadData();
-    }, 1500);
-  } catch(e) {
-    status.style.background = '#fce4ef';
-    status.style.color = '#c0305a';
-    status.textContent = '⚠️ Hindi na-save. Subukan ulit.';
-  } finally {
-    document.getElementById('saveBtn').disabled = false;
-  }
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+  } catch(e) { console.error(e); }
 }
 
 function showState(s) {
-  document.getElementById('loadingState').style.display = s==='loading'?'block':'none';
-  document.getElementById('grid').style.display = s==='grid'?'grid':'none';
-  document.getElementById('emptyState').style.display = s==='empty'?'block':'none';
-  document.getElementById('errorState').style.display = s==='error'?'block':'none';
+  document.getElementById('loadingState').style.display=s==='loading'?'block':'none';
+  document.getElementById('grid').style.display=s==='grid'?'grid':'none';
+  document.getElementById('emptyState').style.display=s==='empty'?'block':'none';
+  document.getElementById('errorState').style.display=s==='error'?'block':'none';
 }
 
-// ── ICONS ──
-const gownSVG = `<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M24 4C20 4 17 7 17 11V18L8 28V60H40V28L31 18V11C31 7 28 4 24 4Z" fill="#e05a8a" opacity="0.2"/><path d="M17 18L8 28M31 18L40 28" stroke="#e05a8a" stroke-width="1.5"/><ellipse cx="24" cy="10" rx="4" ry="5" stroke="#e05a8a" stroke-width="1.5" fill="none"/></svg>`;
-const suitSVG = `<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M16 4L8 18V60H40V18L32 4" stroke="#e05a8a" stroke-width="1.5" fill="none"/><path d="M16 4C16 4 20 12 24 12C28 12 32 4 32 4" stroke="#e05a8a" stroke-width="1.5"/><path d="M24 12V32M20 20H28" stroke="#e05a8a" stroke-width="1.5"/><rect x="21" y="32" width="6" height="8" rx="1" stroke="#e05a8a" stroke-width="1"/></svg>`;
+// ── ICONS ─────────────────────────────────────────────────
+const gownSVG=`<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M24 4C20 4 17 7 17 11V18L8 28V60H40V28L31 18V11C31 7 28 4 24 4Z" fill="#e05a8a" opacity="0.2"/><path d="M17 18L8 28M31 18L40 28" stroke="#e05a8a" stroke-width="1.5"/><ellipse cx="24" cy="10" rx="4" ry="5" stroke="#e05a8a" stroke-width="1.5" fill="none"/></svg>`;
+const suitSVG=`<svg width="48" height="64" viewBox="0 0 48 64" fill="none"><path d="M16 4L8 18V60H40V18L32 4" stroke="#e05a8a" stroke-width="1.5" fill="none"/><path d="M16 4C16 4 20 12 24 12C28 12 32 4 32 4" stroke="#e05a8a" stroke-width="1.5"/><path d="M24 12V32M20 20H28" stroke="#e05a8a" stroke-width="1.5"/><rect x="21" y="32" width="6" height="8" rx="1" stroke="#e05a8a" stroke-width="1"/></svg>`;
 
 function toDirectImg(url) {
-  if (!url) return null;
-  const m = url.match(/\/d\/([\w-]+)/)||url.match(/id=([\w-]+)/);
-  return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400` : url;
+  if(!url)return null;
+  const m=url.match(/\/d\/([\w-]+)/)||url.match(/id=([\w-]+)/);
+  return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`:url;
 }
 
+// ── RENDER ────────────────────────────────────────────────
 function renderCatTabs() {
-  document.getElementById('catTabs').innerHTML = CATEGORIES.map(cat => `
+  document.getElementById('catTabs').innerHTML=CATEGORIES.map(cat=>`
     <button onclick="setCategory('${cat}')" style="padding:7px 20px;border-radius:20px;font-family:'Playfair Display',serif;font-size:13px;cursor:pointer;transition:all 0.2s;
       border:${activeCategory===cat?'none':'1.5px solid #f9a8c9'};
       background:${activeCategory===cat?'#e05a8a':'#fff'};
@@ -273,22 +284,22 @@ function renderCatTabs() {
 }
 
 function renderGrid() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = items.filter(item => {
-    const mc = activeCategory==='All'||item.category===activeCategory;
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const filtered=items.filter(item=>{
+    const mc=activeCategory==='All'||item.category===activeCategory;
     return mc&&(item.name.toLowerCase().includes(q)||(item.color||'').toLowerCase().includes(q)||(item.description||'').toLowerCase().includes(q));
   });
-  if (!filtered.length) { showState('empty'); return; }
+  if(!filtered.length){showState('empty');return;}
   showState('grid');
-  const isSuit = c => ['Suits','Barong'].includes(c);
-  document.getElementById('grid').innerHTML = filtered.map(item => {
-    const img = toDirectImg(item.image);
+  const isSuit=c=>['Suits','Barong'].includes(c);
+  document.getElementById('grid').innerHTML=filtered.map(item=>{
+    const img=toDirectImg(item.image);
     return `<div class="card ${isAdmin?'admin-mode':''}" style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(180,60,110,0.1);border:1.5px solid #ffd6e7;display:flex;flex-direction:column;">
       <div style="aspect-ratio:3/4;background:${PH[item.category]||'#fce4ef'};position:relative;overflow:hidden;">
         ${img
-          ? `<img src="${img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-             <div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};display:none;">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo</span></div>`
-          : `<div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo yet</span></div>`
+          ?`<img src="${img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+            <div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};display:none;">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo</span></div>`
+          :`<div class="placeholder-img" style="background:${PH[item.category]||'#fce4ef'};">${isSuit(item.category)?suitSVG:gownSVG}<span style="font-size:11px;margin-top:8px;color:#b0507a;font-family:serif;">No photo yet</span></div>`
         }
         <div class="cat-badge">${item.category}</div>
         <button class="edit-btn" onclick='openEditModal(${JSON.stringify(item.id)})'>✎</button>
@@ -297,16 +308,76 @@ function renderGrid() {
         <div style="font-family:'Playfair Display',serif;font-size:15px;color:#3b0a22;font-weight:700;margin-bottom:4px;">${item.name}</div>
         <div style="font-size:11px;color:#7b3055;margin-bottom:6px;font-family:Georgia,serif;">${item.color||''} · Size ${item.size||''}</div>
         <div style="font-size:13px;color:#5a1f3a;font-family:Georgia,serif;line-height:1.5;margin-bottom:10px;min-height:36px;">${item.description||''}</div>
-        <div style="font-family:'Playfair Display',serif;font-size:16px;color:#e05a8a;font-weight:700;border-top:1.5px solid #ffd6e7;padding-top:10px;">${item.price||''}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:#e05a8a;font-weight:700;border-top:1.5px solid #ffd6e7;padding-top:10px;margin-bottom:2px;">${item.price||''}</div>
+        <button class="inquire-btn" onclick="openInquiry('${item.name.replace(/'/g,"\\'")}')">📩 Inquire</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function setCategory(cat) { activeCategory=cat; renderCatTabs(); renderGrid(); }
+function setCategory(cat){activeCategory=cat;renderCatTabs();renderGrid();}
 
+// ── INQUIRY ───────────────────────────────────────────────
+function openInquiry(itemName) {
+  currentInquiryItem = itemName;
+  document.getElementById('inquiryItemName').textContent = '🌸 ' + itemName;
+  document.getElementById('inquiryStatus').style.display = 'none';
+  ['iqName','iqPhone','iqEmail','iqAddress','iqMessage'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('iqSubmitBtn').disabled = false;
+  document.getElementById('iqSubmitBtn').textContent = '📩 Ipadala ang Inquiry';
+  document.getElementById('inquiryOverlay').style.display = 'flex';
+}
+
+function closeInquiry() {
+  document.getElementById('inquiryOverlay').style.display = 'none';
+}
+
+async function submitInquiry() {
+  const name = document.getElementById('iqName').value.trim();
+  const phone = document.getElementById('iqPhone').value.trim();
+  if (!name || !phone) { alert('Kailangan ang Pangalan at Phone Number.'); return; }
+
+  const btn = document.getElementById('iqSubmitBtn');
+  const status = document.getElementById('inquiryStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Nagpapadala...';
+  status.style.display = 'block';
+  status.style.background = '#fce4ef';
+  status.style.color = '#7b1e45';
+  status.textContent = '⏳ Ipinapadala ang iyong inquiry...';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'inquiry',
+        item: currentInquiryItem,
+        name,
+        phone,
+        email: document.getElementById('iqEmail').value.trim(),
+        address: document.getElementById('iqAddress').value.trim(),
+        message: document.getElementById('iqMessage').value.trim(),
+      })
+    });
+    status.style.background = '#d4f0e0';
+    status.style.color = '#1a5c35';
+    status.textContent = '✅ Natanggap ang iyong inquiry! Kokontak ka namin soon. 🌸';
+    btn.textContent = '✅ Nasend na!';
+    setTimeout(closeInquiry, 2500);
+  } catch(e) {
+    status.style.background = '#fce4ef';
+    status.style.color = '#c0305a';
+    status.textContent = '⚠️ Hindi naipadala. Subukan ulit.';
+    btn.disabled = false;
+    btn.textContent = '📩 Ipadala ang Inquiry';
+  }
+}
+
+// ── ADMIN ─────────────────────────────────────────────────
 function handleAdminToggle() {
-  if (isAdmin) {
+  if(isAdmin){
     isAdmin=false;
     document.getElementById('adminBar').style.display='none';
     document.getElementById('adminToggleBtn').textContent='Admin';
@@ -320,7 +391,7 @@ function handleAdminToggle() {
 }
 
 function doLogin() {
-  if (document.getElementById('passInput').value===ADMIN_PASSWORD) {
+  if(document.getElementById('passInput').value===ADMIN_PASSWORD){
     isAdmin=true;
     document.getElementById('loginOverlay').style.display='none';
     document.getElementById('adminBar').style.display='flex';
@@ -330,6 +401,7 @@ function doLogin() {
   } else { document.getElementById('passError').style.display='block'; }
 }
 
+// ── EDIT MODAL ────────────────────────────────────────────
 function openAddModal() {
   document.getElementById('editId').value='';
   document.getElementById('modalTitle').textContent='Add New Item';
@@ -343,8 +415,8 @@ function openAddModal() {
 }
 
 function openEditModal(id) {
-  const item = items.find(i=>String(i.id)===String(id));
-  if (!item) return;
+  const item=items.find(i=>String(i.id)===String(id));
+  if(!item)return;
   document.getElementById('editId').value=id;
   document.getElementById('modalTitle').textContent='Edit Item';
   document.getElementById('deleteBtn').style.display='block';
@@ -361,51 +433,52 @@ function openEditModal(id) {
   document.getElementById('editOverlay').style.display='flex';
 }
 
-function closeModal(e) { if(e.target===document.getElementById('editOverlay')) document.getElementById('editOverlay').style.display='none'; }
+function closeModal(e){if(e.target===document.getElementById('editOverlay'))document.getElementById('editOverlay').style.display='none';}
 
 function previewImageUrl() {
-  const val = document.getElementById('editImage').value.trim();
-  const box = document.getElementById('imgPreviewBox');
-  if (val) {
-    const m = val.match(/\/d\/([\w-]+)/)||val.match(/id=([\w-]+)/);
-    document.getElementById('imgPreview').src = m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`:val;
-    box.style.display='block';
-  } else { box.style.display='none'; }
+  const val=document.getElementById('editImage').value.trim();
+  const box=document.getElementById('imgPreviewBox');
+  if(val){const m=val.match(/\/d\/([\w-]+)/)||val.match(/id=([\w-]+)/);document.getElementById('imgPreview').src=m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`:val;box.style.display='block';}
+  else box.style.display='none';
 }
 
-function saveItem() {
-  const id = document.getElementById('editId').value;
-  const data = {
-    id: id || String(Date.now()),
-    name: document.getElementById('editName').value.trim(),
-    price: document.getElementById('editPrice').value.trim(),
-    size: document.getElementById('editSize').value.trim(),
-    color: document.getElementById('editColor').value.trim(),
-    category: document.getElementById('editCategory').value,
-    description: document.getElementById('editDescription').value.trim(),
-    image: document.getElementById('editImage').value.trim()||'',
-  };
-  if (!data.name) { alert('Lagyan ng pangalan ang item.'); return; }
+async function saveItem() {
+  const id=document.getElementById('editId').value;
+  const data={id:id||String(Date.now()),name:document.getElementById('editName').value.trim(),price:document.getElementById('editPrice').value.trim(),size:document.getElementById('editSize').value.trim(),color:document.getElementById('editColor').value.trim(),category:document.getElementById('editCategory').value,description:document.getElementById('editDescription').value.trim(),image:document.getElementById('editImage').value.trim()||''};
+  if(!data.name){alert('Lagyan ng pangalan ang item.');return;}
 
-  // Update local display immediately
-  if (id) {
-    const i = items.findIndex(x=>String(x.id)===String(id));
-    if (i>-1) items[i]={...items[i],...data};
-  } else {
-    items.push(data);
-  }
+  const status=document.getElementById('saveStatus');
+  const btn=document.getElementById('saveBtn');
+  status.style.display='block';
+  status.style.background='#fce4ef';
+  status.style.color='#7b1e45';
+  status.textContent='⏳ Nag-se-save...';
+  btn.disabled=true;
+
+  if(id){const i=items.findIndex(x=>String(x.id)===String(id));if(i>-1)items[i]={...items[i],...data};}
+  else items.push(data);
   renderGrid();
 
-  // Push to Google Sheets
-  pushToSheet(id ? 'edit' : 'add', data);
+  try {
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:id?'edit':'add',...data})});
+    status.style.background='#d4f0e0';
+    status.style.color='#1a5c35';
+    status.textContent='✅ Na-save sa Google Sheets!';
+    setTimeout(()=>{document.getElementById('editOverlay').style.display='none';status.style.display='none';loadData();},1500);
+  } catch(e) {
+    status.style.background='#fce4ef';
+    status.style.color='#c0305a';
+    status.textContent='⚠️ Hindi na-save. Subukan ulit.';
+  } finally { btn.disabled=false; }
 }
 
-function deleteItem() {
-  const id = document.getElementById('editId').value;
-  if (!id||!confirm('I-delete ba ang item na ito?')) return;
-  items = items.filter(i=>String(i.id)!==String(id));
+async function deleteItem() {
+  const id=document.getElementById('editId').value;
+  if(!id||!confirm('I-delete ba ang item na ito?'))return;
+  items=items.filter(i=>String(i.id)!==String(id));
   renderGrid();
-  pushToSheet('delete', { id });
+  document.getElementById('editOverlay').style.display='none';
+  await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id})});
 }
 
 renderCatTabs();
